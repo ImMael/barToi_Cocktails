@@ -6,34 +6,31 @@
  * @flow strict-local
  */
 
-import React from 'react';
 import type {Node} from 'react';
-import {
-  SafeAreaView,
-  ScrollView,
-  StatusBar,
-  StyleSheet,
-  Text,
-  useColorScheme,
-  View,
-} from 'react-native';
-
-import {
-  Colors,
-  DebugInstructions,
-  Header,
-  LearnMoreLinks,
-  ReloadInstructions,
-} from 'react-native/Libraries/NewAppScreen';
+import React from 'react';
+import {StyleSheet} from 'react-native';
+import {NavigationContainer} from '@react-navigation/native';
+import AppNavigator from './src/views/Navigator/AppNavigator';
+import TabNavigator from './src/views/Navigator/TabNavigator';
+import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import HomeView from './src/views/home/HomeView';
+import DetailItem from './src/views/detail/DetailItem';
+
+const Stack = createNativeStackNavigator();
 
 const App: () => Node = () => {
   return (
-    <SafeAreaView>
-      <ScrollView>
-        <HomeView />
-      </ScrollView>
-    </SafeAreaView>
+    <NavigationContainer>
+      <Stack.Navigator>
+        <Stack.Screen
+          name="TabNav"
+          component={TabNavigator}
+          options={{headerShown: false}}
+        />
+        <Stack.Screen name="Home" component={HomeView} />
+        <Stack.Screen name="Details" component={DetailItem} />
+      </Stack.Navigator>
+    </NavigationContainer>
   );
 };
 

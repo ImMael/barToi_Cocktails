@@ -1,9 +1,29 @@
-import React, {useEffect} from 'react';
-import {FlatList, Image, StyleSheet, Text, View} from 'react-native';
+import React, {useCallback, useEffect} from 'react';
+import {
+  Image,
+  SafeAreaView,
+  ScrollView,
+  StyleSheet,
+  Text,
+  View,
+} from 'react-native';
+import Card from './components/Card';
 
-const HomeView: () => Node = () => {
+const HomeView: () => Node = props => {
+  const {navigation} = props;
   const [count, setCount] = React.useState(0);
   const [drinks, setDrinks] = React.useState([]);
+
+  const goToDetails = useCallback(
+    drink => {
+      navigation.navigate('Details', {
+        title: drink.strDrink,
+        image: drink.strDrinkThumb,
+        id: drink.idDrink,
+      });
+    },
+    [navigation],
+  );
 
   useEffect(() => {
     fetch('https://www.thecocktaildb.com/api/json/v1/1/filter.php?a=Alcoholic')
@@ -17,61 +37,47 @@ const HomeView: () => Node = () => {
       });
   }, []);
 
-  console.log(drinks);
-
   return (
-    <View style={styles.container}>
-      <Text style={styles.welcome}>Welcome to BarToi !</Text>
-      <Text style={styles.instructions}>Using CocktailsDB API !</Text>
-      <Text style={styles.instructions}>Current : {count}</Text>
-      <View style={styles.listContainer}>
-        {drinks.map(drink => (
-          <View key={drink.idDrink} style={styles.listItem}>
-            <Image
-              source={{
-                uri: drink.strDrinkThumb,
-              }}
-              style={styles.image}
-            />
-            <Text>{drink.strDrink}</Text>
+    <SafeAreaView>
+      <ScrollView>
+        <View style={styles.container}>
+          <Text style={styles.welcome}>Welcome to BarToi !</Text>
+          <Text style={styles.instructions}>Drink List</Text>
+          <View style={styles.listContainer}>
+            {drinks.map(drink => (
+              <Card
+                key={drink.idDrink}
+                title={drink.strDrink}
+                image={drink.strDrinkThumb}
+                onPress={() => goToDetails(drink)}
+              />
+            ))}
           </View>
-        ))}
-      </View>
-    </View>
+        </View>
+      </ScrollView>
+    </SafeAreaView>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#fff',
+    display: 'flex',
     alignItems: 'center',
     justifyContent: 'center',
   },
   welcome: {
     fontSize: 24,
-    textAlign: 'center',
     fontWeight: 'bold',
     margin: 10,
   },
   instructions: {
-    textAlign: 'center',
     color: '#333333',
     marginBottom: 5,
-  },
-  listItem: {
-    padding: 10,
-    margin: 10,
-    backgroundColor: '#eee',
-    borderColor: 'black',
-    borderWidth: 1,
+    textAlign: 'left',
   },
   listContainer: {
     width: '80%',
-  },
-  image: {
-    width: '100%',
-    height: 200,
   },
 });
 
