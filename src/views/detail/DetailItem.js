@@ -1,8 +1,42 @@
-import React, {useEffect} from 'react';
-import {StyleSheet, Text, View, Image, ScrollView} from 'react-native';
+import React, {useCallback, useEffect} from 'react';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import {
+  StyleSheet,
+  Text,
+  View,
+  Image,
+  ScrollView,
+  TouchableOpacity,
+} from 'react-native';
 const DetailItem = ({navigation, route}) => {
   const {id} = route.params;
   const [drink, setDrink] = React.useState({});
+  const [isFavorite, setIsFavorite] = React.useState(false);
+  const saveLike = async () => {
+    try {
+      const jsonValue = JSON.stringify(isFavorite);
+      await AsyncStorage.setItem(`@drinkLike_${id}`, jsonValue);
+      console.log('Data successfully saved');
+    } catch (e) {
+      console.log(e);
+    }
+  };
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  const readData = async () => {
+    try {
+      const jsonValue = await AsyncStorage.getItem(`@drinkLike_${id}`);
+      if (jsonValue !== null) {
+        setIsFavorite(jsonValue);
+      }
+    } catch (e) {
+      console.log(e);
+    }
+  };
+
+  const toggleLike = useCallback(() => {
+    // console.log('Before', isFavorite);
+    saveLike(!isFavorite).then(() => console.log('saved: ' + isFavorite));
+  }, [isFavorite, saveLike]);
 
   useEffect(() => {
     fetch(`https://www.thecocktaildb.com/api/json/v1/1/lookup.php?i=${id}`)
@@ -13,6 +47,10 @@ const DetailItem = ({navigation, route}) => {
       .catch(error => {
         console.error(error);
       });
+  });
+
+  useEffect(() => {
+    readData();
   });
 
   const generateIngredients = () => {
@@ -49,7 +87,15 @@ const DetailItem = ({navigation, route}) => {
             <Text style={styles.subtitle}>{drink.strAlcoholic}</Text>
           </View>
           <View style={styles.likeContainer}>
-            <Text>Like</Text>
+            <TouchableOpacity
+              onPress={() => {
+                toggleLike();
+              }}
+              style={isFavorite ? styles.dislikeButton : styles.likeButton}>
+              <Text style={styles.likeText}>
+                {isFavorite ? 'Dislike' : 'Like'}
+              </Text>
+            </TouchableOpacity>
           </View>
         </View>
         <Text style={styles.text}>{drink.strInstructions}</Text>
@@ -132,6 +178,20 @@ const styles = StyleSheet.create({
     flex: 2,
     display: 'flex',
     alignItems: 'center',
+  },
+  likeButton: {
+    backgroundColor: 'blue',
+    padding: 10,
+    borderRadius: 10,
+  },
+  dislikeButton: {
+    backgroundColor: 'red',
+    padding: 10,
+    borderRadius: 10,
+  },
+  likeText: {
+    color: 'white',
+    fontSize: 16,
   },
 });
 
