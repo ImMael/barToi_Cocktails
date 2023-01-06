@@ -31,11 +31,13 @@
       "size" : "40x40"
     },
     {
+      "filename" : "ic_launcher 1.png",
       "idiom" : "iphone",
       "scale" : "2x",
       "size" : "60x60"
     },
     {
+      "filename" : "ic_launcher (1).png",
       "idiom" : "iphone",
       "scale" : "3x",
       "size" : "60x60"
@@ -44,6 +46,11 @@
       "idiom" : "ios-marketing",
       "scale" : "1x",
       "size" : "1024x1024"
+    },
+    {
+      "idiom" : "mac",
+      "scale" : "1x",
+      "size" : "512x512"
     }
   ],
   "info" : {

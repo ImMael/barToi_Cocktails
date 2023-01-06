@@ -2,7 +2,6 @@ import React from 'react';
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 import HomeView from '../home/HomeView';
 import About from '../About/About';
-import DetailItem from '../detail/DetailItem';
 
 const Tab = createBottomTabNavigator();
 
