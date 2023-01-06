@@ -376,9 +376,9 @@ PODS:
     - React-jsi (= 0.70.6)
     - React-logger (= 0.70.6)
     - React-perflogger (= 0.70.6)
-  - RNPermissions (3.6.1):
-    - React-Core
   - RNCAsyncStorage (1.17.11):
+    - React-Core
+  - RNPermissions (3.6.1):
     - React-Core
   - RNScreens (3.18.2):
     - React-Core
@@ -451,8 +451,8 @@ DEPENDENCIES:
   - React-RCTVibration (from `../node_modules/react-native/Libraries/Vibration`)
   - React-runtimeexecutor (from `../node_modules/react-native/ReactCommon/runtimeexecutor`)
   - ReactCommon/turbomodule/core (from `../node_modules/react-native/ReactCommon`)
-  - RNPermissions (from `../node_modules/react-native-permissions`)
   - "RNCAsyncStorage (from `../node_modules/@react-native-async-storage/async-storage`)"
+  - RNPermissions (from `../node_modules/react-native-permissions`)
   - RNScreens (from `../node_modules/react-native-screens`)
   - RNVectorIcons (from `../node_modules/react-native-vector-icons`)
   - Yoga (from `../node_modules/react-native/ReactCommon/yoga`)
@@ -614,6 +614,6 @@ SPEC CHECKSUMS:
   Yoga: 99caf8d5ab45e9d637ee6e0174ec16fbbb01bcfc
   YogaKit: f782866e155069a2cca2517aafea43200b01fd5a
 
-PODFILE CHECKSUM: a22403497e86e9f55525f029cc3959d6461adfef
+PODFILE CHECKSUM: 1290b6eac1ba5b86f477ba44bcd4c2d59b5f3efa
 
 COCOAPODS: 1.11.3

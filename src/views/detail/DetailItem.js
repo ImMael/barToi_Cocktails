@@ -35,7 +35,7 @@ const DetailItem = ({navigation, route}) => {
 
   const toggleLike = useCallback(() => {
     // console.log('Before', isFavorite);
-    saveLike(!isFavorite).then(() => console.log('saved: ' + isFavorite));
+    saveLike(!isFavorite).then(() => console.log('saved'));
   }, [isFavorite, saveLike]);
 
   useEffect(() => {
