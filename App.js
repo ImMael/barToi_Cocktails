@@ -10,7 +10,6 @@ import type {Node} from 'react';
 import React from 'react';
 import {StyleSheet} from 'react-native';
 import {NavigationContainer} from '@react-navigation/native';
-import AppNavigator from './src/views/Navigator/AppNavigator';
 import TabNavigator from './src/views/Navigator/TabNavigator';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import HomeView from './src/views/home/HomeView';
