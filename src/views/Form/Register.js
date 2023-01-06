@@ -1,136 +1,118 @@
-import React, {useCallback, useState} from 'react';
-import {
-  Text,
-  TouchableOpacity,
-  TextInput,
-  ScrollView,
-  Image,
-  SafeAreaView,
-  Alert,
-  StyleSheet,
-} from 'react-native';
+import React, {useCallback, useEffect, useMemo, useState} from 'react';
+import {Alert, Button, StyleSheet, Text, TextInput, View} from 'react-native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import {useNavigation} from '@react-navigation/native';
 
 const Register = () => {
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [confirmPassword, setConfirmPassword] = useState('');
+  const [mail, setMail] = useState('');
+  const [pwd, setPwd] = useState('');
+  const [pwdConfirmation, setPwdConfirmation] = useState('');
+  let verifPwd = useMemo(() => pwd, [pwd]);
+  const navigation = useNavigation();
 
-  const [isPasswordValid, setIsPasswordValid] = useState(false);
-  const [isConfirmPasswordValid, setIsConfirmPasswordValid] = useState(true);
-
-  const validateConfirmPassword = useCallback(() => {
-    setIsConfirmPasswordValid(password === confirmPassword);
-  }, [confirmPassword, password]);
-
-  const validatePassword = useCallback(() => {
-    setIsPasswordValid(password.length > 3);
-
-    validateConfirmPassword();
-  }, [password, validateConfirmPassword]);
-
-  const onSubmit = useCallback(() => {
-    if (
-      !email ||
-      !password ||
-      !confirmPassword ||
-      !isPasswordValid ||
-      !isConfirmPasswordValid
-    ) {
-      Alert.alert('Merci de compléter le formulaire');
-      user: JSON.stringify({password: password, email: email});
-      return;
+  const saveUser = async () => {
+    try {
+      const getUser = JSON.stringify({mail: mail, pwd: pwd});
+      console.log(getUser);
+      await AsyncStorage.setItem('savedUser', getUser);
+    } catch (e) {
+      console.log(e);
     }
+  };
 
-    Alert.alert('Bonjour ' + email + ', votre mot de passe est ' + password);
-  }, [
-    confirmPassword,
-    email,
-    isConfirmPasswordValid,
-    isPasswordValid,
-    password,
-  ]);
+  const inscription = useCallback(
+    async () => {
+      if (
+        mail.length !== 0 &&
+        pwd.length >= 3 &&
+        pwdConfirmation.length !== 0 &&
+        verifPwd === pwdConfirmation
+      ) {
+        await saveUser();
+        navigation.goBack();
+        //Alert.alert('Bonjour ' + mail + ' , votre mot de passe est ' + pwd);
+      } else {
+        Alert.alert('Le mail ou le mot de passe est incorrect !');
+      }
+    }, // eslint-disable-next-line react-hooks/exhaustive-deps
+    [mail, pwd, pwdConfirmation, verifPwd],
+  );
 
   return (
-    <SafeAreaView style={styles.screen}>
-      <ScrollView style={styles.container}>
-        <Text style={styles.titleText}>Inscription</Text>
+    <View style={styles.body}>
+      <View style={styles.div1}>
+        <Text style={styles.text}>Inscription</Text>
+      </View>
+      <View style={styles.div2}>
         <TextInput
-          value={email}
-          onChangeText={setEmail}
-          style={styles.input}
+          value={mail}
+          onChangeText={setMail}
           placeholder={'Mail'}
-          placeholderTextColor="grey"
+          style={styles.textInput}
         />
         <TextInput
-          value={password}
-          onChangeText={setPassword}
-          style={[styles.input, !isPasswordValid && styles.errorInput]}
+          value={pwd}
+          onChangeText={setPwd}
           placeholder={'Mot de passe'}
           secureTextEntry={true}
-          onEndEditing={validatePassword}
+          style={styles.textInput}
         />
         <TextInput
-          value={confirmPassword}
-          onChangeText={setConfirmPassword}
-          style={[styles.input, !isConfirmPasswordValid && styles.errorInput]}
+          value={pwdConfirmation}
+          onChangeText={setPwdConfirmation}
           placeholder={'Confirmation du mot de passe'}
           secureTextEntry={true}
-          onEndEditing={validateConfirmPassword}
+          style={styles.textInput}
         />
-        <TouchableOpacity style={styles.submitBtn} onPress={onSubmit}>
-          <Text>S'inscrire</Text>
-        </TouchableOpacity>
-      </ScrollView>
-    </SafeAreaView>
+        <Button title={'Valider'} onPress={inscription} />
+      </View>
+    </View>
   );
 };
-
 const styles = StyleSheet.create({
-  screen: {
+  body: {
     flex: 1,
-  },
-  container: {
-    flex: 1,
-  },
-  titleText: {
-    textAlign: 'center',
-    marginVertical: 20,
-    fontSize: 25,
-    fontWeight: 'bold',
-    color: 'black',
-  },
-  avatar: {
-    width: 100,
-    height: 100,
-    borderRadius: 50,
-    backgroundColor: 'grey',
-    alignSelf: 'center',
-    marginBottom: 20,
-  },
-  input: {
-    borderColor: 'grey',
-    backgroundColor: '#b8b8b8',
-    borderWidth: 1,
-    borderRadius: 5,
-    marginHorizontal: 15,
-    marginVertical: 15,
-    paddingHorizontal: 10,
-    height: 50,
-  },
-  errorInput: {
-    borderColor: 'red',
-  },
-  submitBtn: {
-    width: 200,
-    height: 50,
-    borderColor: 'grey',
-    borderWidth: 1,
-    borderRadius: 20,
-    marginVertical: 20,
-    alignSelf: 'center',
+    justifyContent: 'space-evenly',
     alignItems: 'center',
+    padding: 20,
+  },
+  div1: {
+    flex: 2,
+    textAlign: 'center',
     justifyContent: 'center',
   },
+  div2: {
+    flex: 3,
+    width: '100%',
+    alignItems: 'center',
+  },
+  image: {
+    width: 150,
+    height: 150,
+    borderRadius: 100,
+  },
+  text: {
+    fontSize: 30,
+    color: 'black',
+    fontWeight: 'bold',
+  },
+  textInput: {
+    width: 300,
+    height: 50,
+    marginBottom: 40,
+    color: '#000',
+    paddingHorizontal: 10,
+    borderStyle: 'solid',
+    borderBottomWidth: 1,
+    borderBottomColor: 'black',
+  },
+  textInputError: {
+    height: 40,
+    width: '90%',
+    borderWidth: 1,
+    borderRadius: 5,
+    borderColor: 'red',
+    backgroundColor: '#C0C0C0',
+  },
 });
-
 export default Register;

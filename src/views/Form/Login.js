@@ -1,93 +1,113 @@
-import React from 'react';
-import {
-  Alert,
-  Image,
-  SafeAreaView,
-  ScrollView,
-  StyleSheet,
-  Text,
-  TextInput,
-  TouchableOpacity,
-} from 'react-native';
+import React, {useCallback, useEffect, useMemo, useState} from 'react';
+import {Alert, Button, StyleSheet, Text, TextInput, View} from 'react-native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import {useNavigation} from '@react-navigation/native';
+import HomeView from '../home/HomeView';
 
-const Login = () => {
+const Login: () => Node = props => {
+  const [mail, setMail] = useState('');
+  const [pwd, setPwd] = useState('');
+  const navigation = useNavigation();
+
+  const findUser = async () => {
+    try {
+      return await AsyncStorage.getItem('savedUser');
+    } catch (e) {
+      console.log(e);
+    }
+  };
+
+  const inscription = useCallback(async () => {
+    const user = await findUser();
+    if (user) {
+      const result = JSON.parse(user);
+      if (mail === result.mail && pwd === result.pwd) {
+        navigation.navigate('Home');
+      } else {
+        Alert.alert('Le mail ou le mot de passe est incorrect !');
+      }
+    } else {
+      console.log('USER NOT FOUND');
+    }
+  }, [mail, navigation, pwd]);
+
+  const goToRegister = useCallback(async () => {
+    navigation.navigate('Register');
+  }, [navigation]);
+
   return (
-    <SafeAreaView style={styles.screen}>
-      <ScrollView style={styles.container}>
-        <Text style={styles.titleText}>Inscription</Text>
+    <View style={styles.body}>
+      <View style={styles.div1}>
+        <Text style={styles.text}>Connexion</Text>
+      </View>
+      <View style={styles.div2}>
         <TextInput
-          style={styles.input}
+          value={mail}
+          onChangeText={setMail}
           placeholder={'Mail'}
-          placeholderTextColor="grey"
+          style={styles.textInput}
         />
         <TextInput
-          style={styles.input}
-          placeholder={'Nom'}
-          placeholderTextColor="grey"
-        />
-        <TextInput
-          style={styles.input}
+          value={pwd}
+          onChangeText={setPwd}
           placeholder={'Mot de passe'}
           secureTextEntry={true}
+          style={styles.textInput}
         />
-        <TextInput
-          style={styles.input}
-          placeholder={'Confirmation du mot de passe'}
-          secureTextEntry={true}
-        />
-        <TouchableOpacity
-          style={styles.submitBtn}
-          onPress={() => Alert.alert('Inscription enregistrée')}>
-          <Text>Connexion</Text>
-        </TouchableOpacity>
-      </ScrollView>
-    </SafeAreaView>
+        <Button title={'Valider'} onPress={inscription} />
+      </View>
+      <Button title={"S'inscrire"} onPress={goToRegister} />
+    </View>
   );
 };
-
 const styles = StyleSheet.create({
-  screen: {
+  body: {
     flex: 1,
-  },
-  container: {
-    flex: 1,
-  },
-  titleText: {
-    textAlign: 'center',
-    marginVertical: 20,
-    fontSize: 25,
-    fontWeight: 'bold',
-    color: 'black',
-  },
-  avatar: {
-    width: 100,
-    height: 100,
-    borderRadius: 50,
-    backgroundColor: 'grey',
-    alignSelf: 'center',
-    marginBottom: 20,
-  },
-  input: {
-    borderColor: 'grey',
-    backgroundColor: '#b8b8b8',
-    borderWidth: 1,
-    borderRadius: 5,
-    marginHorizontal: 15,
-    marginVertical: 15,
-    paddingHorizontal: 10,
-    height: 50,
-  },
-  submitBtn: {
-    width: 200,
-    height: 50,
-    borderColor: 'grey',
-    borderWidth: 1,
-    borderRadius: 20,
-    marginVertical: 20,
-    alignSelf: 'center',
+    justifyContent: 'space-evenly',
     alignItems: 'center',
+    padding: 20,
+  },
+  div1: {
+    flex: 2,
+    textAlign: 'center',
     justifyContent: 'center',
   },
+  div2: {
+    flex: 3,
+    width: '100%',
+    alignItems: 'center',
+  },
+  div3: {
+    flex: 1,
+    justifyContent: 'space-evenly',
+  },
+  image: {
+    width: 150,
+    height: 150,
+    borderRadius: 100,
+  },
+  text: {
+    fontSize: 30,
+    color: 'black',
+    fontWeight: 'bold',
+  },
+  textInput: {
+    width: 300,
+    height: 50,
+    marginBottom: 40,
+    color: '#000',
+    paddingHorizontal: 10,
+    borderStyle: 'solid',
+    borderBottomWidth: 1,
+    borderBottomColor: 'black',
+  },
+  textInputError: {
+    height: 40,
+    width: '90%',
+    borderWidth: 1,
+    borderRadius: 5,
+    borderColor: 'red',
+    backgroundColor: '#C0C0C0',
+  },
 });
-
 export default Login;
