@@ -26,7 +26,11 @@ const App: () => Node = () => {
           component={Login}
           options={{headerShown: false}}
         />
-        <Stack.Screen name="Home" component={HomeView} />
+        <Stack.Screen
+          name="Home2"
+          component={TabNavigator}
+          options={{headerShown: false}}
+        />
         <Stack.Screen name="Details" component={DetailItem} />
         <Stack.Screen name="Register" component={Register} />
       </Stack.Navigator>

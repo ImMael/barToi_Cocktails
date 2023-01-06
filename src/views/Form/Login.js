@@ -22,7 +22,7 @@ const Login: () => Node = props => {
     if (user) {
       const result = JSON.parse(user);
       if (mail === result.mail && pwd === result.pwd) {
-        navigation.navigate('Home');
+        navigation.navigate('Home2');
       } else {
         Alert.alert('Le mail ou le mot de passe est incorrect !');
       }
